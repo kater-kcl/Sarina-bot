@@ -1,10 +1,14 @@
 from flask import Flask
 from flask_sockets import Sockets
+import utils.db_mgr as db
+import config.db_config as db_config
 import base_module.base as base
 import json
 
 app = Flask(__name__)
 sockets = Sockets(app)
+db_config.init_config()
+db.init_database()
 
 
 @sockets.route('/')
