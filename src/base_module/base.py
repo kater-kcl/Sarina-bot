@@ -5,7 +5,11 @@ from utils.message_builder import group_message
 
 
 def solve_base(call_back: Callable[[str], str], message: str, user_id: int, group_id: int):
-    command, args = message.split(" ", 1)
+    if " " in message:
+        command, args = message.split(" ", 1)
+    else:
+        command = message
+        args = ""
     if command == "sign":
         return sign_in(call_back, user_id, group_id)
     else:

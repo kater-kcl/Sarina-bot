@@ -14,6 +14,7 @@ def bot_socket(ws):
         data = json.loads(data)
         if data.get('message_type') == 'group' and data.get('raw_message'):
             raw_message = data['raw_message']
+            print(raw_message)
             user_id = data['user_id']
             group_id = data['group_id']
             if raw_message[0] == "*":
