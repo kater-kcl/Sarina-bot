@@ -59,5 +59,5 @@ def start_adv(call_back: Callable[[str], str], user_id: str, group_id: int, leve
 def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: int):
     result = adv_api.get_adv_progress(user_id)
     result = make_forward_message([result])
-    ret = group_message(group_id, result)
+    ret = group_message(group_id, [result])
     call_back(json.dumps(ret))
