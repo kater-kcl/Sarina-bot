@@ -9,22 +9,16 @@ def group_message(group_id, message):
 
 
 def make_forward_message(message_list: list):
-    ret = {
-        "type": "node",
-        "data": {
-            "user_id": "2523375735",
-            "nickname": "Sarina bot",
-            "content": [
+    ret = []
 
-            ]
-        }
-    }
     for message in message_list:
         cot = {
-            "type": "text",
+            "type": "node",
             "data": {
-                "text": message
+                "user_id": "2523375735",
+                "nickname": "Sarina bot",
+                "content": message
             }
         }
-        ret['data']['content'].append(cot)
+        ret.append(cot)
     return ret
