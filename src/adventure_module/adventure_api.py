@@ -14,19 +14,19 @@ def init_adv():
     init_levels()
 
 
-def init_items():
+def init_items(file_direct="./adventure_module/"):
     global items
-    with open("./items/items.json", "r") as f:
+    with open(file_direct + "items/items.json", "r") as f:
         items = json.load(f)
     for item_type in items.keys():
         items[item_type] = dict(zip([item['id'] for item in items[item_type]], items[item_type]))
 
 
-def init_levels():
+def init_levels(file_direct="./adventure_module/"):
     global levels_info
     # 遍历文件夹levels下的每个关卡文件并读取
-    for file in os.listdir("./levels"):
-        with open("./levels/" + file, "r") as f:
+    for file in os.listdir(file_direct + "levels"):
+        with open(file_direct + "levels/" + file, "r") as f:
             level_content = json.load(f)
             levels_info[level_content['level_id']] = level_content
 
