@@ -1,7 +1,7 @@
 import json
 from typing import Callable
 import adventure_module.adventure_api as adv_api
-from utils.message_builder import group_message, make_forward_message
+from utils.message_builder import group_message, make_forward_message, forward_message
 
 
 def init_adv():
@@ -59,7 +59,8 @@ def start_adv(call_back: Callable[[str], str], user_id: str, group_id: int, leve
 def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: int, res_listener: Callable[[str], str]):
     result = adv_api.get_adv_progress(user_id)
     result = make_forward_message(call_back, [result], res_listener)
-    ret = group_message(group_id, result)
+    result = forward_message(result)
+    ret = group_message(group_id, [result])
     call_back(json.dumps(ret))
 
 

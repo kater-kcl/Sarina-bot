@@ -41,3 +41,12 @@ def make_forward_message(call_back: Callable, message_list: list, res_listener):
     call_back(json.dumps(ret))
     res = res_listener()
     return json.loads(res)['data']
+
+
+def forward_message(resid: str):
+    return {
+        "type": "forward",
+        "data": {
+            "id": resid
+        }
+    }
