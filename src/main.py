@@ -5,8 +5,12 @@ import config.db_config as db_config
 import base_module.base as base
 import adventure_module.adventure_connect as adv
 import json
+import logging
+
+from utils import message_builder
 
 app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
 sockets = Sockets(app)
 db_config.init_config()
 db.init_database()
@@ -29,6 +33,11 @@ def bot_socket(ws):
                     base.solve_base(ws.send, args, user_id, group_id)
                 elif command == "adv":
                     adv.solve_adv(ws.send, args, user_id, group_id)
+                elif command == 'test':
+                    temp = ws.send(message_builder.make_forward_message([]))
+                    app.logger.info(temp)
+
+
 
 
 if __name__ == "__main__":

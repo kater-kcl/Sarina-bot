@@ -9,27 +9,34 @@ def group_message(group_id, message):
 
 
 def make_forward_message(message_list: list):
-    # ret = []
-    #
-    # for message in message_list:
-    #     cot = {
-    #         "type": "node",
-    #         "data": {
-    #             "user_id": "2523375735",
-    #             "nickname": "Sarina bot",
-    #             "content": message
-    #         }
-    #     }
-    #     ret.append(cot)
-    # return ret
+    date = [
+        {
+            "type": "node",
+            "data": {
+                "name": "消息发送者A",
+                "uin": "10086",
+                "content": [
+                    {
+                        "type": "text",
+                        "data": {
+                            "text": "测试消息1"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "node",
+            "data": {
+                "name": "消息发送者B",
+                "uin": "10087",
+                "content": "[CQ:image,file=xxxxx]测试消息2"
+            }
+        }
+    ]
     return {
-        "type": "node",
-        "data": {
-            "user_id": "10001000",
-            "nickname": "某人",
-            "content": [
-                {"type": "face", "data": {"id": "123"}},
-                {"type": "text", "data": {"text": "哈喽～"}}
-            ]
+        'action': 'send_forward_msg',
+        'params': {
+            'messages': date,
         }
     }
