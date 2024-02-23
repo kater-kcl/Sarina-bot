@@ -24,7 +24,6 @@ def solve_base(call_back: Callable[[str], str], message: str, user_id: str, grou
 
 
 def sign_in(call_back: Callable[[str], str], user_id: str, group_id: int):
-    # 如果今天签到过了就返回
     last_sign: datetime.datetime = db.get_user_last_sign(user_id)
     if last_sign.date() == datetime.date.today():
         result = "[CQ:at,qq={0}] 今天已经签到过了".format(user_id)
