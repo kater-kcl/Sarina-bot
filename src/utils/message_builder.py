@@ -45,7 +45,7 @@ def make_forward_message(call_back: Callable, message_list: list, res_listener):
 
 def forward_message(resid: str):
     return {
-        "type": "node",
+        "type": "forward",
         "data": {
             "id": resid
         }
