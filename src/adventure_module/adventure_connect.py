@@ -1,6 +1,6 @@
 import json
 from typing import Callable
-import src.adventure_module.adventure_api as adv_api
+import adventure_module.adventure_api as adv_api
 
 
 def init_adv():
