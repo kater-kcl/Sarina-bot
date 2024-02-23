@@ -34,7 +34,8 @@ def bot_socket(ws):
                 elif command == "adv":
                     adv.solve_adv(ws.send, args, user_id, group_id)
                 elif command == 'test':
-                    temp = ws.send(message_builder.make_forward_message([]))
+                    ret = message_builder.make_forward_message([])
+                    temp = ws.send(json.dumps(ret))
                     app.logger.info(temp)
 
 
