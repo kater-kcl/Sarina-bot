@@ -1,9 +1,9 @@
 {
-    "level_id": "1-1",
-    "level_name": "初始之地-1",
+    "level_id": "test",
+    "level_name": "测试用关卡，仅管理可用",
     "level_type": "normal",
     "level_points": 10,
-    "level_time": 600,
+    "level_time": 60,
     "level_event": {
         "mine_event": [
             {

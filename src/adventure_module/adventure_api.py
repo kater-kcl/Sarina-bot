@@ -1,5 +1,7 @@
+import datetime
 import json
 import os
+import random
 
 from utils.message_builder import group_message
 
@@ -7,6 +9,12 @@ from utils.message_builder import group_message
 adv_dict: dict = {}
 items = {}
 levels_info = {}
+event_type_dict = {
+    "mine_event": "挖矿",
+    "gather_event": "采集",
+    "fight_event": "战斗",
+    "boss_event": "BOSS战"
+}
 
 
 def init_adv():
@@ -35,7 +43,7 @@ def get_level_list():
     result = "关卡列表：\n"
     for level_id in levels_info.keys():
         result += level_id + " : " + levels_info[level_id]['level_name'] + "\n"
-    return result
+    return result.rstrip()
 
 
 def get_level_info(level_id: str):
@@ -66,27 +74,116 @@ def get_level_info(level_id: str):
                     result += str(min_amount) + "\n\n"
                 else:
                     result += str(min_amount) + "~" + str(max_amount) + "\n\n"
-    return result
+    return result.rstrip()
 
 
 def get_map(uid: str, group_id: int, call_back):
     return
 
 
-def start_adv(uid: str, group_id: int, call_back):
+def start_adv(uid: str, level_id: str):
     if uid in adv_dict:
-        result = "[CQ:at,qq={0}] 你已经在冒险中了".format(uid)
-        ret = group_message(group_id, result)
-        return call_back(json.dumps(ret))
+        return None
     else:
-        adv_dict[uid] = 0
-        result = "[CQ:at,qq={0}] 开始冒险".format(uid)
-        ret = group_message(group_id, result)
-        return call_back(json.dumps(ret))
+        adv_dict[uid] = {
+            "level_id": level_id,
+            "start_time": datetime.datetime.now(),
+            "events": [],
+        }
+        return "踏上了前往{}的冒险之旅".format(levels_info[level_id]['level_name'])
+
+
+# 未来可能会加入角色属性对于事件的影响
+def solve_event_result(event: dict, event_type: str):
+    result = {}
+    event_result = event['event_result']
+    if event_type == "mine_event" or event_type == "gather_event":
+        result['get_item'] = {}
+        item_result = result['get_item']
+        for item in event_result:
+            # 根据probability属性随机决定是否获得该物品
+            if random.random() < item['probability']:
+                item_type = item['item_type']
+                item_id = item['item_id']
+                amount = random.randint(item['amount']['min'], item['amount']['max'])
+                if item_type not in item_result:
+                    item_result[item_type] = {}
+                if item_id not in item_result[item_type]:
+                    item_result[item_type][item_id] = 0
+                item_result[item_type][item_id] += amount
+    return result
+
+
+def generate_event(level_event: dict):
+    events_type_list = [event_type for event_type in level_event.keys() if
+                        len(level_event[event_type]) > 0 and event_type != "boss_event"]
+    event_type = random.choice(events_type_list)
+    # 从事件列表中以random_weight属性作为权值随机选择一个事件
+    event = random.choices(level_event[event_type], [event['random_weight'] for event in level_event[event_type]])[0]
+    result = solve_event_result(event, event_type)
+    result_event = {
+        "event_type": event_type,
+        "event_text": event['event_text'],
+        "event_id": event['event_id'],
+        "event_result": result
+    }
+    return result_event
+
+
+# 用于补全事件
+def complete_adv(uid: str):
+    if uid not in adv_dict:
+        return False
+    level_info = levels_info[adv_dict[uid]['level_id']]
+    second_per_event = level_info['level_time'] / level_info['level_points']
+    now = datetime.datetime.now()
+    time_passed = now - adv_dict[uid]['start_time']
+    event_passed = int(time_passed.total_seconds() / second_per_event)
+    event_nums = min(event_passed, level_info['level_points'])
+    if event_nums > len(adv_dict[uid]['events']):
+        for i in range(event_nums - len(adv_dict[uid]['events'])):
+            new_event = generate_event(level_info['level_event'])
+            new_event['event_time'] = adv_dict[uid]['start_time'] + datetime.timedelta(seconds=second_per_event * i)
+            adv_dict[uid]['events'].append(new_event)
+
+
+def get_adv_progress(uid: str):
+    if uid not in adv_dict:
+        return None
+    complete_adv(uid)
+    level_info = levels_info[adv_dict[uid]['level_id']]
+    events = adv_dict[uid]['events']
+    result = "你正在进行的冒险：\n"
+    result += "关卡：" + level_info['level_name'] + "\n"
+    result += "已经进行的事件：" + str(len(events)) + "/" + str(level_info['level_points']) + ": \n\n"
+    for event in events:
+        result += "事件({}/{})".format(events.index(event) + 1, level_info['level_points']) + "\n"
+        result += "事件名称：\"" + event['event_text'] + "\"\n"
+        result += "事件ID：" + event['event_id'] + "\n"
+        result += "事件时间：" + event['event_time'].strftime("%Y-%m-%d %H:%M:%S") + "\n"
+        result += "事件结果：\n"
+        event_result = event['event_result']
+        for item_result in event_result['get_item'].keys():
+            item_type = item_result
+            result_items = event_result['get_item'][item_result]
+            for item_id in result_items.keys():
+                item_name = items[item_type][item_id]['chinese_name']
+                amount = result_items[item_id]
+                result += "获得" + item_name + "：" + str(amount) + "\n"
+        result += "\n"
+
+    return result.rstrip()
 
 
 if __name__ == "__main__":
-    init_items()
-    init_levels()
-    print(get_level_list())
+    init_items("./")
+    init_levels("./")
+    # print(get_level_list())
     # print(get_level_info("1-1"))
+    print(start_adv("123", "test"))
+    while True:
+        command = input()
+        if command == "p":
+            print(get_adv_progress("123"))
+
+
