@@ -18,6 +18,10 @@ def solve_adv(call_back: Callable[[str], str], message: str, user_id: str, group
         return show_adv_list(call_back, user_id, group_id)
     elif command == "info":
         return show_adv_info(call_back, user_id, group_id, args)
+    elif command == "start":
+        return start_adv(call_back, user_id, group_id, args)
+    elif command == "progress":
+        return get_adv_progress(call_back, user_id, group_id)
     else:
         result = "[CQ:at,qq={0}] 未知命令".format(user_id)
         ret = group_message(group_id, result)
