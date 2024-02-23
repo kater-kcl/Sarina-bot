@@ -14,7 +14,7 @@ def make_forward_message(message_list: list):
             "type": "node",
             "data": {
                 "name": "消息发送者A",
-                "uin": "10086",
+                "uin": "2276363693",
                 "content": [
                     {
                         "type": "text",
@@ -29,8 +29,8 @@ def make_forward_message(message_list: list):
             "type": "node",
             "data": {
                 "name": "消息发送者B",
-                "uin": "10087",
-                "content": "[CQ:image,file=xxxxx]测试消息2"
+                "uin": "2276363693",
+                "content": "测试消息2"
             }
         }
     ]
