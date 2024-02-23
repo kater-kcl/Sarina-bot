@@ -8,7 +8,7 @@ def init_adv():
     adv_api.init_adv()
 
 
-def solve_adv(call_back: Callable[[str], str], message: str, user_id: str, group_id: int):
+def solve_adv(call_back: Callable[[str], str], message: str, user_id: str, group_id: int, res_listener):
     if " " in message:
         command, args = message.split(" ", 1)
     else:
@@ -21,7 +21,7 @@ def solve_adv(call_back: Callable[[str], str], message: str, user_id: str, group
     elif command == "start":
         return start_adv(call_back, user_id, group_id, args)
     elif command == "progress":
-        return get_adv_progress(call_back, user_id, group_id)
+        return get_adv_progress(call_back, user_id, group_id, res_listener)
     else:
         result = "[CQ:at,qq={0}] 未知命令".format(user_id)
         ret = group_message(group_id, result)
@@ -56,17 +56,17 @@ def start_adv(call_back: Callable[[str], str], user_id: str, group_id: int, leve
         call_back(json.dumps(ret))
 
 
-def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: int):
+def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: int, res_listener: Callable[[str], str]):
     result = adv_api.get_adv_progress(user_id)
-    # result = make_forward_message([result])
+    result = make_forward_message(call_back, [result], res_listener)
     ret = group_message(group_id, result)
     call_back(json.dumps(ret))
 
 
-if __name__ == "__main__":
-    adv_api.init_items("./")
-    adv_api.init_levels("./")
-    print(adv_api.get_level_list())
-    print(adv_api.get_level_info("1-1"))
-    print(adv_api.start_adv("123", "1-1"))
-    get_adv_progress(print, 123456789,1)
+# if __name__ == "__main__":
+#     adv_api.init_items("./")
+#     adv_api.init_levels("./")
+#     print(adv_api.get_level_list())
+#     print(adv_api.get_level_info("1-1"))
+#     print(adv_api.start_adv("123", "1-1"))
+#     get_adv_progress(print, 123456789,1)

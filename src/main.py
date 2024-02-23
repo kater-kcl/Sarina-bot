@@ -32,7 +32,7 @@ def bot_socket(ws):
                 if command == "b":
                     base.solve_base(ws.send, args, user_id, group_id)
                 elif command == "adv":
-                    adv.solve_adv(ws.send, args, user_id, group_id)
+                    adv.solve_adv(ws.send, args, user_id, group_id, ws.receive)
                 elif command == 'test':
                     ret = message_builder.make_forward_message([])
                     ws.send(json.dumps(ret))
