@@ -43,7 +43,8 @@ def show_adv_info(call_back: Callable[[str], str], user_id: str, group_id: int, 
 
 
 def start_adv(call_back: Callable[[str], str], user_id: str, group_id: int, level_id: str):
-    print(user_id,type(user_id))
+    print(user_id)
+    print(type(user_id))
     if level_id == 'test' and user_id != '2276363693':
         result = "关卡仅限管理员测试使用".format(user_id)
         ret = group_message(group_id, result)
