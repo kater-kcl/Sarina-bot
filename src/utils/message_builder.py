@@ -30,7 +30,14 @@ def make_forward_message(message_list: list):
             "data": {
                 "name": "消息发送者B",
                 "uin": "2276363693",
-                "content": "测试消息2"
+                "content": [
+                    {
+                        "type": "text",
+                        "data": {
+                            "text": "测试消息1"
+                        }
+                    }
+                ]
             }
         }
     ]
