@@ -31,9 +31,6 @@ def show_adv_info(call_back: Callable[[str], str], user_id: str, group_id: int, 
     result = "{}".format(adv_info)
     ret = adv_api.group_message(group_id, result)
     call_back(json.dumps(ret))
-<<<<<<< HEAD
 
-# if __name__ == "__main__":
-#     show_adv_list(print,"!23","123")
-=======
->>>>>>> origin/main
+
+
