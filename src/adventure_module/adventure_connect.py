@@ -58,6 +58,15 @@ def start_adv(call_back: Callable[[str], str], user_id: str, group_id: int, leve
 
 def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: int):
     result = adv_api.get_adv_progress(user_id)
-    result = make_forward_message([result])
-    ret = group_message(group_id, [result])
+    # result = make_forward_message([result])
+    ret = group_message(group_id, result)
     call_back(json.dumps(ret))
+
+
+if __name__ == "__main__":
+    adv_api.init_items("./")
+    adv_api.init_levels("./")
+    print(adv_api.get_level_list())
+    print(adv_api.get_level_info("1-1"))
+    print(adv_api.start_adv("123", "1-1"))
+    get_adv_progress(print, 123456789,1)
