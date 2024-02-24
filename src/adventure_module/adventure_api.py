@@ -160,7 +160,7 @@ def complete_adv(uid: str):
     if event_nums > len(adv_dict[uid]['events']):
         for i in range(event_nums - len(adv_dict[uid]['events'])):
             new_event = generate_event(level_info['level_event'])
-            new_event['event_time'] = start_time + datetime.timedelta(seconds=second_per_event * i)
+            new_event['event_time'] = (start_time + datetime.timedelta(seconds=second_per_event * i)).isoformat()
             adv_dict[uid]['events'].append(new_event)
     save = get_adv_save(uid)
     save['adventure'] = adv_dict[uid]
@@ -178,7 +178,7 @@ def get_adv_progress(uid: str):
     for event in events:
         result += "事件({}/{})".format(events.index(event) + 1, level_info['level_points']) + "\n"
         result += "事件名称：\"" + event['event_text'] + "\"\n"
-        result += "事件时间：" + event['event_time'].strftime("%Y-%m-%d %H:%M:%S") + "\n"
+        result += "事件时间：" + event['event_time'] + "\n"
         result += "事件结果：\n"
         event_result = event['event_result']
         for item_result in event_result['get_item'].keys():
