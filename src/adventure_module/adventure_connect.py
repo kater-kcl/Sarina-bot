@@ -1,5 +1,8 @@
 import json
 from typing import Callable
+
+from flask import current_app
+
 import adventure_module.adventure_api as adv_api
 from utils.message_builder import group_message, make_forward_message, forward_message
 
@@ -71,17 +74,17 @@ def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: in
 
 
 def finish_adv(call_back: Callable[[str], str], user_id: str, group_id: int, res_listener: Callable[[str], str]):
+    current_app.logger.info("in_finish_adv")
     result = adv_api.finish_adv(user_id)
+    current_app.logger.info(result)
     if result is None:
         result = "[CQ:at,qq={0}] 你没有在冒险中".format(user_id)
         ret = group_message(group_id, result)
         return call_back(json.dumps(ret))
-    result = "[CQ:at,qq={0}]".format(user_id) + result
     result = make_forward_message(call_back, [result], res_listener)
     result = forward_message(result)
     ret = group_message(group_id, result)
-    if result is not None:
-        call_back(json.dumps(ret))
+    call_back(json.dumps(ret))
 
 # if __name__ == "__main__":
 #     adv_api.init_items("./")

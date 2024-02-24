@@ -7,6 +7,10 @@ from database.adv_save_mgr import get_adv_save, set_adv_save, get_all_adv_save
 from utils.utils import DateTimeEncoder, datetime_decoder
 
 
+from flask import current_app
+
+
+
 # 用于记录正在进行的冒险的信息
 adv_dict: dict = {}
 items = {}
@@ -46,8 +50,9 @@ def recover_adv_from_db():
     all_adv_save = get_all_adv_save()
     for save in all_adv_save:
         uid = save[0]
-        print(uid)
+        current_app.logger.info(uid)
         save_json = json.loads(save[1], object_hook=datetime_decoder)
+        current_app.logger.info(save_json)
         if "adventure" in save_json and save_json["adventure"] != {}:
             adv_dict[uid] = save_json["adventure"]
 
