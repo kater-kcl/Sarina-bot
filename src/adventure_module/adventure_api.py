@@ -48,9 +48,10 @@ def init_levels(file_direct="../resource/adventure_module/"):
 
 def recover_adv_from_db():
     all_adv_save = get_all_adv_save()
+    print(123)
+    print(all_adv_save)
     for save in all_adv_save:
         uid = save[0]
-        current_app.logger.info(uid)
         save_json = json.loads(save[1], object_hook=datetime_decoder)
         current_app.logger.info(save_json)
         if "adventure" in save_json and save_json["adventure"] != {}:
