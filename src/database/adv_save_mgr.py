@@ -1,6 +1,6 @@
 import json
 
-from database.db_mgr import db_mgr
+import database.db_mgr as DB
 
 
 def adv_save_exists_decorator(func):
@@ -15,7 +15,7 @@ def adv_save_exists_decorator(func):
 
 def check_adv_save_exists(user_id):
     query = "SELECT * FROM adv_save WHERE uid = %s"
-    result = db_mgr.execute_query(query, (user_id,))
+    result = DB.db_mgr.execute_query(query, (user_id,))
     return len(result) > 0
 
 
@@ -26,13 +26,13 @@ def add_adv_save(user_id):
     with open('../resource/adventure_module/saves/default.json', 'r') as f:
         data = json.load(f)
 
-    db_mgr.execute_update(query, (user_id, json.dumps(data)))
+    DB.db_mgr.execute_update(query, (user_id, json.dumps(data)))
 
 
 @adv_save_exists_decorator
 def get_adv_save(user_id: str):
     query = "SELECT save_json FROM adv_save WHERE uid = %s"
-    result = db_mgr.execute_query(query, (user_id,))
+    result = DB.db_mgr.execute_query(query, (user_id,))
     if result:
         return json.loads(result[0][0])
     else:
@@ -42,6 +42,6 @@ def get_adv_save(user_id: str):
 @adv_save_exists_decorator
 def set_adv_save(user_id: str, save_json: dict):
     query = "UPDATE adv_save SET save_json = %s WHERE uid = %s"
-    db_mgr.execute_update(query, (json.dumps(save_json), user_id))
+    DB.db_mgr.execute_update(query, (json.dumps(save_json), user_id))
 
 
