@@ -2,6 +2,7 @@ FROM python:3.9.6-slim
 LABEL authors="Kater_kcl"
 
 COPY src /sarina/src
+COPY resource /sarina/resource
 COPY requirements.txt /sarina
 WORKDIR /sarina/src
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r /sarina/requirements.txt
