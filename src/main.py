@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sockets import Sockets
-import utils.db_mgr as db
+import database.db_mgr as db
 import config.db_config as db_config
 import base_module.base as base
 import adventure_module.adventure_connect as adv
@@ -28,16 +28,19 @@ def bot_socket(ws):
             group_id = data['group_id']
             if raw_message[0] == "*":
                 command = raw_message[1:]
-                command, args = command.split(" ", 1)
+                if " " in command:
+                    command, args = command.split(" ", 1)
+                else:
+                    args = ""
                 if command == "b":
                     base.solve_base(ws.send, args, user_id, group_id)
                 elif command == "adv":
                     adv.solve_adv(ws.send, args, user_id, group_id, ws.receive)
-                elif command == 'test':
-                    ret = message_builder.make_forward_message([])
-                    ws.send(json.dumps(ret))
-                    temp = ws.receive()
-                    app.logger.info(temp)
+                # elif command == 'test':
+                #     ret = message_builder.make_forward_message([])
+                #     ws.send(json.dumps(ret))
+                #     temp = ws.receive()
+                #     app.logger.info(temp)
 
 
 

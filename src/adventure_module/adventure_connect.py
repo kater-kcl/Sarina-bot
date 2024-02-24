@@ -22,6 +22,8 @@ def solve_adv(call_back: Callable[[str], str], message: str, user_id: str, group
         return start_adv(call_back, user_id, group_id, args)
     elif command == "progress":
         return get_adv_progress(call_back, user_id, group_id, res_listener)
+    elif command == "finish":
+        return finish_adv(call_back, user_id, group_id, res_listener)
     else:
         result = "[CQ:at,qq={0}] 未知命令".format(user_id)
         ret = group_message(group_id, result)
@@ -63,6 +65,14 @@ def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: in
     ret = group_message(group_id, result)
     call_back(json.dumps(ret))
 
+
+def finish_adv(call_back: Callable[[str], str], user_id: str, group_id: int, res_listener: Callable[[str], str]):
+    result = adv_api.finish_adv(user_id)
+    result = "[CQ:at,qq={0}]".format(user_id) + result
+    result = make_forward_message(call_back, [result], res_listener)
+    ret = group_message(group_id, result)
+    if result is not None:
+        call_back(json.dumps(ret))
 
 # if __name__ == "__main__":
 #     adv_api.init_items("./")
