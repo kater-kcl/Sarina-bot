@@ -82,8 +82,11 @@ def finish_adv(call_back: Callable[[str], str], user_id: str, group_id: int, res
         ret = group_message(group_id, result)
         return call_back(json.dumps(ret))
     result = make_forward_message(call_back, [result], res_listener)
+    current_app.logger.info(result)
     result = forward_message(result)
+    current_app.logger.info(result)
     ret = group_message(group_id, result)
+    current_app.logger.info(ret)
     call_back(json.dumps(ret))
 
 # if __name__ == "__main__":
