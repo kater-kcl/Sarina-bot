@@ -214,7 +214,7 @@ def finish_adv(uid: str):
             result_items[item_type] = event_result['get_item'][item_result]
     current_app.logger.info("after get result_items")
     save = get_adv_save(uid)
-
+    current_app.logger.info(result_items)
     for item_type in result_items.keys():
         current_app.logger.info(item_type)
         if item_type not in save['items']:
