@@ -199,7 +199,9 @@ def finish_adv(uid: str):
     if uid not in adv_dict:
         return None
     result = "冒险结束：\n"
+    current_app.logger.info("finish_adv")
     result += get_adv_progress(uid) + "\n"
+    current_app.logger.info("after get_adv_progress")
     result += "总计获得奖励：\n"
     result_items = {}
     events = adv_dict[uid]['events']
@@ -210,6 +212,7 @@ def finish_adv(uid: str):
             if item_type not in result_items:
                 result_items[item_type] = {}
             result_items[item_type] = event_result['get_item'][item_result]
+    current_app.logger.info("after get result_items")
     save = get_adv_save(uid)
     for item_type in result_items.keys():
         for item_id in result_items[item_type].keys():
@@ -221,10 +224,11 @@ def finish_adv(uid: str):
             if item_id not in save['items'][item_type]:
                 save['items'][item_type][item_id] = 0
             save['items'][item_type][item_id] += amount
-
+    current_app.logger.info("after add items")
     del adv_dict[uid]
     save['adventure'] = {}
     set_adv_save(uid, save)
+    current_app.logger.info("end")
     return result.rstrip()
 
 
