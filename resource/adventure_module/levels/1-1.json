@@ -13,7 +13,7 @@
                     {
                         "result_type": "get_item",
                         "probability": 1,
-                        "item_id": 3,
+                        "item_id": "3",
                         "item_type": "material",
                         "amount": {
                             "min": 1,
@@ -30,7 +30,7 @@
                     {
                         "result_type": "get_item",
                         "probability": 1,
-                        "item_id": 4,
+                        "item_id": "4",
                         "item_type": "material",
                         "amount": {
                             "min": 1,
@@ -49,7 +49,7 @@
                     {
                         "result_type": "get_item",
                         "probability": 1,
-                        "item_id": 1,
+                        "item_id": "1",
                         "item_type": "material",
                         "amount": {
                             "min": 1,
@@ -66,7 +66,7 @@
                     {
                         "result_type": "get_item",
                         "probability": 1,
-                        "item_id": 1,
+                        "item_id": "1",
                         "item_type": "material",
                         "amount": {
                             "min": 1,

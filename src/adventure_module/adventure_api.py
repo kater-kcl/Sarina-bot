@@ -217,13 +217,12 @@ def finish_adv(uid: str):
     current_app.logger.info(result_items)
     for item_type in result_items.keys():
         current_app.logger.info(item_type)
-        if item_type not in save['items']:
-            save['items'][item_type] = {}
+        if item_type not in save['backpack']:
+            save['backpack'][item_type] = {}
         for item_id in result_items[item_type].keys():
-            current_app.logger.info(item_id)
-            if item_id not in save['items'][item_type]:
-                save['items'][item_type][item_id] = 0
-            save['items'][item_type][item_id] += result_items[item_type][item_id]
+            if item_id not in save['backpack'][item_type]:
+                save['backpack'][item_type][item_id] = 0
+            save['backpack'][item_type][item_id] += result_items[item_type][item_id]
     current_app.logger.info("after add items")
     del adv_dict[uid]
     save['adventure'] = {}

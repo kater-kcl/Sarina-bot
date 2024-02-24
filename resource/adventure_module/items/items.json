@@ -1,21 +1,21 @@
 {
   "material": [{
-    "id": 1,
+    "id": "1",
     "name": "wood",
     "chinese_name": "木头"
   },
     {
-        "id": 2,
+        "id": "2",
       "name": "inferior_herb",
       "chinese_name": "劣质草药"
     },
     {
-      "id": 3,
+      "id": "3",
         "name": "copper_ore",
         "chinese_name": "铜矿石"
     },
     {
-      "id": 4,
+      "id": "4",
         "name": "iron_ore",
         "chinese_name": "铁矿石"
     }
