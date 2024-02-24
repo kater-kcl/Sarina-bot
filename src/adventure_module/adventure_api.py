@@ -4,7 +4,6 @@ import os
 import random
 
 from database.adv_save_mgr import get_adv_save, set_adv_save, get_all_adv_save
-from utils.utils import DateTimeEncoder, datetime_decoder
 
 
 from flask import current_app
@@ -50,9 +49,7 @@ def recover_adv_from_db():
     all_adv_save = get_all_adv_save()
     for save in all_adv_save:
         uid = save[0]
-        save_json = json.loads(save[1], object_hook=datetime_decoder)
-        print(save_json)
-        print(save_json["adventure"])
+        save_json = json.loads(save[1])
         if "adventure" in save_json and save_json["adventure"] != {}:
             adv_dict[uid] = save_json["adventure"]
 
@@ -103,7 +100,7 @@ def start_adv(uid: str, level_id: str):
     else:
         adv_dict[uid] = {
             "level_id": level_id,
-            "start_time": datetime.datetime.now(),
+            "start_time": datetime.datetime.now().isoformat(),
             "events": [],
         }
         save = get_adv_save(uid)
@@ -156,13 +153,14 @@ def complete_adv(uid: str):
     level_info = levels_info[adv_dict[uid]['level_id']]
     second_per_event = level_info['level_time'] / level_info['level_points']
     now = datetime.datetime.now()
-    time_passed = now - adv_dict[uid]['start_time']
+    start_time = datetime.datetime.fromisoformat(adv_dict[uid]['start_time'])
+    time_passed = now - start_time
     event_passed = int(time_passed.total_seconds() / second_per_event)
     event_nums = min(event_passed, level_info['level_points'])
     if event_nums > len(adv_dict[uid]['events']):
         for i in range(event_nums - len(adv_dict[uid]['events'])):
             new_event = generate_event(level_info['level_event'])
-            new_event['event_time'] = adv_dict[uid]['start_time'] + datetime.timedelta(seconds=second_per_event * i)
+            new_event['event_time'] = start_time + datetime.timedelta(seconds=second_per_event * i)
             adv_dict[uid]['events'].append(new_event)
     save = get_adv_save(uid)
     save['adventure'] = adv_dict[uid]
