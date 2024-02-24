@@ -10,7 +10,7 @@ import logging
 from utils import message_builder
 
 app = Flask(__name__)
-app.logger.setLevel(logging.INFO)
+# app.logger.setLevel(logging.)
 sockets = Sockets(app)
 db_config.init_config()
 db.init_database()
