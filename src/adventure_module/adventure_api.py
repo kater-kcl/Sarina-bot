@@ -3,7 +3,9 @@ import json
 import os
 import random
 
-from database.adv_save_mgr import get_adv_save, set_adv_save
+from database.adv_save_mgr import get_adv_save, set_adv_save, get_all_adv_save
+from utils.utils import DateTimeEncoder, datetime_decoder
+
 
 # 用于记录正在进行的冒险的信息
 adv_dict: dict = {}
@@ -20,6 +22,7 @@ event_type_dict = {
 def init_adv():
     init_items()
     init_levels()
+    recover_adv_from_db()
 
 
 def init_items(file_direct="../resource/adventure_module/"):
@@ -39,11 +42,21 @@ def init_levels(file_direct="../resource/adventure_module/"):
             levels_info[level_content['level_id']] = level_content
 
 
+def recover_adv_from_db():
+    all_adv_save = get_all_adv_save()
+    for save in all_adv_save:
+        uid = save[0]
+        save_json = json.loads(save[1], object_hook=datetime_decoder)
+        if "adventure" in save_json and save_json["adventure"] != {}:
+            adv_dict[uid] = save_json["adventure"]
+
+
 def get_level_list():
     result = "关卡列表：\n"
     for level_id in levels_info.keys():
         result += level_id + " : " + levels_info[level_id]['level_name'] + "\n"
     return result.rstrip()
+
 
 
 def get_level_info(level_id: str):

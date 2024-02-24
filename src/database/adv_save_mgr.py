@@ -40,9 +40,13 @@ def get_adv_save(user_id: str):
         return None
 
 
+def get_all_adv_save():
+    query = "SELECT * FROM adv_save"
+    result = DB.db_mgr.execute_query(query)
+    return result
+
+
 @adv_save_exists_decorator
 def set_adv_save(user_id: str, save_json: dict):
     query = "UPDATE adv_save SET save_json = %s WHERE uid = %s"
     DB.db_mgr.execute_update(query, (json.dumps(save_json, cls=DateTimeEncoder), user_id))
-
-

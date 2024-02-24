@@ -70,6 +70,7 @@ def finish_adv(call_back: Callable[[str], str], user_id: str, group_id: int, res
     result = adv_api.finish_adv(user_id)
     result = "[CQ:at,qq={0}]".format(user_id) + result
     result = make_forward_message(call_back, [result], res_listener)
+    result = forward_message(result)
     ret = group_message(group_id, result)
     if result is not None:
         call_back(json.dumps(ret))
