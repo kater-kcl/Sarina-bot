@@ -51,6 +51,7 @@ def recover_adv_from_db():
     for save in all_adv_save:
         uid = save[0]
         save_json = json.loads(save[1], object_hook=datetime_decoder)
+        print(save_json)
         print(save_json["adventure"])
         if "adventure" in save_json and save_json["adventure"] != {}:
             adv_dict[uid] = save_json["adventure"]
