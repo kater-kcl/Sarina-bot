@@ -55,7 +55,10 @@ def start_adv(call_back: Callable[[str], str], user_id: str, group_id: int, leve
     #     ret = group_message(group_id, result)
     #     return call_back(json.dumps(ret))
     result = adv_api.start_adv(user_id, level_id)
-    result = "[CQ:at,qq={0}]".format(user_id) + result
+    if result is None:
+        result = "[CQ:at,qq={0}] 你已经在冒险中了".format(user_id)
+    else:
+        result = "[CQ:at,qq={0}]".format(user_id) + result
     ret = group_message(group_id, result)
     if result is not None:
         call_back(json.dumps(ret))
@@ -67,9 +70,11 @@ def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: in
         result = "[CQ:at,qq={0}] 你没有在冒险中".format(user_id)
         ret = group_message(group_id, result)
         return call_back(json.dumps(ret))
-    result = make_forward_message(call_back, [result], res_listener)
-    result = forward_message(result)
+    # result = make_forward_message(call_back, [result], res_listener)
+    # result = forward_message(result)
     ret = group_message(group_id, result)
+    # print(ret)
+    # print(json.dumps(ret))
     call_back(json.dumps(ret))
 
 
@@ -81,12 +86,11 @@ def finish_adv(call_back: Callable[[str], str], user_id: str, group_id: int, res
         result = "[CQ:at,qq={0}] 你没有在冒险中".format(user_id)
         ret = group_message(group_id, result)
         return call_back(json.dumps(ret))
-    result = make_forward_message(call_back, [result], res_listener)
-    current_app.logger.info(result)
-    result = forward_message(result)
-    current_app.logger.info(result)
+    # result = make_forward_message(call_back, [result], res_listener)
+    # result = forward_message(result)
     ret = group_message(group_id, result)
-    current_app.logger.info(ret)
+    # print(ret)
+    # print(json.dumps(ret))
     call_back(json.dumps(ret))
 
 # if __name__ == "__main__":

@@ -4,7 +4,6 @@ import random
 from typing import Callable
 
 import database.base_data_mgr
-import database.db_mgr as db
 from utils.message_builder import group_message
 
 

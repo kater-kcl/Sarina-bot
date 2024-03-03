@@ -12,6 +12,16 @@ def group_message(group_id, message):
     }
 
 
+def private_message(user_id, message):
+    return {
+        'action': 'send_private_msg',
+        'params': {
+            'user_id': user_id,
+            'message': message,
+        }
+    }
+
+
 def make_forward_message(call_back: Callable, message_list: list, res_listener):
     date = []
     for message in message_list:

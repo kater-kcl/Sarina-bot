@@ -2,13 +2,11 @@ import datetime
 import json
 import os
 import random
+from typing import Dict, List, Optional, Union, Tuple, Any
 
 from database.adv_save_mgr import get_adv_save, set_adv_save, get_all_adv_save
 
-
 from flask import current_app
-
-
 
 # 用于记录正在进行的冒险的信息
 adv_dict: dict = {}
@@ -20,6 +18,17 @@ event_type_dict = {
     "fight_event": "战斗",
     "boss_event": "BOSS战"
 }
+
+
+class player_backpack(Dict):
+    pass
+
+
+class player_save:
+    def __init__(self, uid: str):
+        self.uid = uid
+        self.adventure = {}
+        self.backpack = {}
 
 
 def init_adv():
@@ -61,7 +70,6 @@ def get_level_list():
     return result.rstrip()
 
 
-
 def get_level_info(level_id: str):
     if level_id not in levels_info:
         return "未找到关卡"
@@ -91,7 +99,6 @@ def get_level_info(level_id: str):
                 else:
                     result += str(min_amount) + "~" + str(max_amount) + "\n\n"
     return result.rstrip()
-
 
 
 def start_adv(uid: str, level_id: str):
@@ -157,8 +164,9 @@ def complete_adv(uid: str):
     time_passed = now - start_time
     event_passed = int(time_passed.total_seconds() / second_per_event)
     event_nums = min(event_passed, level_info['level_points'])
+    print(event_passed, event_nums)
     if event_nums > len(adv_dict[uid]['events']):
-        for i in range(event_nums - len(adv_dict[uid]['events'])):
+        for i in range(len(adv_dict[uid]['events']), event_nums):
             new_event = generate_event(level_info['level_event'])
             new_event['event_time'] = (start_time + datetime.timedelta(seconds=second_per_event * i)).isoformat()
             adv_dict[uid]['events'].append(new_event)
@@ -178,18 +186,14 @@ def get_adv_progress(uid: str):
     for event in events:
         result += "事件({}/{})".format(events.index(event) + 1, level_info['level_points']) + "\n"
         result += "事件名称：\"" + event['event_text'] + "\"\n"
-        result += "事件时间：" + event['event_time'] + "\n"
+        date_object = datetime.datetime.fromisoformat(event['event_time'])
+        result += "事件时间：" + date_object.strftime("%Y-%m-%d %H:%M:%S") + "\n"
         result += "事件结果：\n"
         event_result = event['event_result']
-        for item_result in event_result['get_item'].keys():
-            item_type = item_result
-            result_items = event_result['get_item'][item_result]
-            for item_id in result_items.keys():
-                item_name = items[item_type][item_id]['chinese_name']
-                amount = result_items[item_id]
-                result += "获得" + item_name + "：" + str(amount) + "\n"
-        result += "\n"
-
+        print(event_result)
+        if 'get_item' in event_result:
+            pass
+    print(result)
     return result.rstrip()
 
 
@@ -212,7 +216,6 @@ def finish_adv(uid: str):
             result_items[item_type] = event_result['get_item'][item_result]
     current_app.logger.info("after get result_items")
     save = get_adv_save(uid)
-    current_app.logger.info(result_items)
     for item_type in result_items.keys():
         current_app.logger.info(item_type)
         if item_type not in save['backpack']:
