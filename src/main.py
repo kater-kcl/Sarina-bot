@@ -26,7 +26,7 @@ def bot_socket(ws):
         data = ws.receive()
         data = json.loads(data)
         if data.get('message_type') == 'group' and data.get('raw_message'):
-            raw_message = zhtml.unescape(data['raw_message'])
+            raw_message = html.unescape(data['raw_message'])
             user_id = str(data['user_id'])
             group_id = data['group_id']
             message_id = data['message_id']
