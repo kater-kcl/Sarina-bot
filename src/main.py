@@ -61,12 +61,10 @@ def bot_socket(ws):
                 #     app.logger.info(temp)
 
 
-
-
 if __name__ == "__main__":
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
+
     server = pywsgi.WSGIServer(('127.0.0.1', 1717), app, handler_class=WebSocketHandler)
     print("Server start")
     server.serve_forever()
-

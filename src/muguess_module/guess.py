@@ -1,11 +1,10 @@
 import json
 import random
-import urllib
-import html
+from typing import Dict
 
 from utils.message_builder import group_message, private_message
 
-games = {}
+
 # Every key-value is user_id to gamestatus
 
 user_guess = {}
@@ -18,7 +17,6 @@ def cmp_format(s):
     return s.replace('，', ',').replace('：', ':').replace('”', '"').replace('“', '"').replace('（', '(').replace('）',
                                                                                                                ')').replace(
         '＃', '#')
-
 
 class GameStatus:
     # every score in score board is user_id to score
@@ -66,6 +64,9 @@ class GameStatus:
     def get_limit(self):
         return self.limit
 
+    def get_length(self):
+        return len(self.anslist)
+
     def get_display(self):
         display_list = []
         for j in range((len(self.anslist))):
@@ -92,6 +93,7 @@ class GameStatus:
                 return False
         return True
 
+games :Dict[str, GameStatus] = {}
 
 def read_from_phigros():
     phi_file = open('../resource/muguess_module/phigros_song.txt', 'r')
@@ -276,7 +278,7 @@ def guess_name(call_back, msg_id, user_id, group_id, content):
     content = content.split(' ', 1)
     if group_id not in games.keys():
         msg = "本群未开始一个游戏，输入“*muguess create”开始一场刺激的音游猜字母吧！"
-    elif False == content[0].isdigit():
+    elif not content[0].isdigit():
         msg = '格式错误，请重新输入'
     else:
         stu = games[group_id].guess_name(int(content[0]), content[1])
@@ -303,6 +305,28 @@ def guess_name(call_back, msg_id, user_id, group_id, content):
         call_back(json.dumps(ret))
 
 
+def guess_name_anyway(call_back, message_id, user_id, group_id, message):
+    msg = ""
+    game = games[group_id]
+    stu = 0
+    for i in range(game.get_length()):
+        i_stu = game.guess_name(i + 1, message)
+        if i_stu != 0:
+            stu = i_stu
+    if stu == 1:
+        msg = '[CQ:reply,id={0}][CQ:at,qq={1}][CQ:at,qq={1}]\n'.format(message_id, user_id)
+        msg += '已猜测字符有：{}({}/{})\n'.format(
+            game.get_chars(), game.get_times(), game.get_limit())
+        display = game.get_display()
+        for i in range(len(display)):
+            msg += '{0}、{1}\n'.format(i + 1, display[i])
+    elif stu == 0:
+        msg = '猜错了，要不要再猜猜看\n'
+    elif stu == -1:
+        msg = '这个已经被猜过了哦\n'
+    ret = group_message(group_id, msg.strip())
+    call_back(json.dumps(ret))
+
 def create_user_guess(call_back, user_id, message):
     print('create user guess')
     names = message.split('\n')
@@ -328,6 +352,17 @@ def set_user_guess_limit(call_back, user_id, message):
     call_back(json.dumps(ret))
 
 
+# this function is called when some action dose not match any of the existing action
+
+
+def freedom_listening(call_back, user_id, group_id, message: str, message_id):
+    if group_id in games.keys():
+        guess_name_anyway(call_back, message_id, user_id, group_id, message)
+    else:
+        ret = group_message(group_id, '未找到指令')
+        call_back(json.dumps(ret))
+
+
 def mug_guess_solve(callback, user_id, group_id, message: str, message_id):
     if " " in message or "\n" in message:
         command, args = message.split(maxsplit=1)
@@ -345,6 +380,8 @@ def mug_guess_solve(callback, user_id, group_id, message: str, message_id):
             show_answer(callback, group_id)
         elif command == 'help':
             game_help(callback, group_id)
+        else:
+            freedom_listening(callback, user_id, group_id, message, message_id)
     else:
         print(command)
         if command == 'create':
