@@ -1,22 +1,20 @@
+import html
 import json
 import random
 from typing import Dict
 
 from utils.message_builder import group_message, private_message
 
-
 # Every key-value is user_id to gamestatus
 
 user_guess = {}
-
-
-# User's owner guesses
 
 
 def cmp_format(s):
     return s.replace('，', ',').replace('：', ':').replace('”', '"').replace('“', '"').replace('（', '(').replace('）',
                                                                                                                ')').replace(
         '＃', '#')
+
 
 class GameStatus:
     # every score in score board is user_id to score
@@ -93,92 +91,28 @@ class GameStatus:
                 return False
         return True
 
-games :Dict[str, GameStatus] = {}
 
-def read_from_phigros():
-    phi_file = open('../resource/muguess_module/phigros_song.txt', 'r')
-    return phi_file.read().split('\n')
+games: Dict[str, GameStatus] = {}
 
+mug_names = ['phigros', 'arcaea', 'orzmic', 'dancerail3', 'lanota', 'dynamix', 'maimai', 'wacca', 'chunithm', 'lyrica']
 
-def read_from_arcaea():
-    phi_file = open('../resource/muguess_module/arcaea_song.txt', 'r')
-    return phi_file.read().split('\n')
+mug_alias = {}
 
-
-def read_from_orzmic():
-    orz_file = open('../resource/muguess_module/orzmic.txt', 'r')
-    return orz_file.read().split('\n')
-
-
-def read_from_dr3():
-    dr3_file = open('../resource/muguess_module/dancerail3_song.txt', 'r')
-    return dr3_file.read().split('\n')
-
-
-def read_from_la():
-    la_file = open('../resource/muguess_module/lanota_song.txt', 'r')
-    return la_file.read().split('\n')
-
-
-def read_from_dy():
-    dy_file = open('../resource/muguess_module/dy_song.txt', 'r')
-    return dy_file.read().split('\n')
-
-
-def read_from_maimai():
-    mai_file = open('../resource/muguess_module/mai_song.txt', 'r')
-    return mai_file.read().split('\n')
-
-
-def read_from_wacca():
-    wa_file = open('../resource/muguess_module/wacca_song.txt', 'r')
-    return wa_file.read().split('\n')
-
-
-def read_from_chunithm():
-    chu_file = open('../resource/muguess_module/chunithm_song.txt', 'r')
-    return chu_file.read().split('\n')
+def read_mug_list(mug_name: str):
+    if mug_name in mug_names:
+        with open('../resource/muguess_module/{}_song.txt'.format(mug_name), 'r') as f:
+            return f.read().split('\n')
+    else:
+        return []
 
 
 def get_random_ten_name(muglist):
     random_name_list = []
-    if 'phigros' in muglist or 'phi' in muglist:
-        phi_name_list = read_from_phigros()
-        for name in phi_name_list:
-            random_name_list.append(name.strip())
-    if 'arc' in muglist or 'arcaea' in muglist:
-        arc_name_list = read_from_arcaea()
-        for name in arc_name_list:
-            random_name_list.append(name.strip())
-    if 'orz' in muglist or 'orzmic' in muglist:
-        orz_name_list = read_from_orzmic()
-        for name in orz_name_list:
-            random_name_list.append(name.strip())
-    if 'dr3' in muglist or 'dancerail3' in muglist:
-        dr3_name_list = read_from_dr3()
-        for name in dr3_name_list:
-            random_name_list.append(name.strip())
-    if 'la' in muglist or 'lanota' in muglist:
-        la_name_list = read_from_la()
-        for name in la_name_list:
-            random_name_list.append(name.strip())
-    if 'dy' in muglist or 'dynamix' in muglist:
-        dy_name_list = read_from_dy()
-        for name in dy_name_list:
-            random_name_list.append(name.strip())
-    if 'mai' in muglist or 'maimai' in muglist:
-        mai_name_list = read_from_maimai()
-        for name in mai_name_list:
-            random_name_list.append(name.strip())
-    if 'wa' in muglist or 'wacca' in muglist:
-        wa_name_list = read_from_wacca()
-        for name in wa_name_list:
-            random_name_list.append(name.strip())
-    if "chu" in muglist or "chunithm" in muglist or "中二节奏" in muglist or "中二" in muglist:
-        chu_name_list = read_from_chunithm()
-        for name in chu_name_list:
-            random_name_list.append(name.strip())
+    for mug in muglist:
+        random_name_list += read_mug_list(mug)
     random_name_list = list(set(random_name_list))
+    if len(random_name_list) < 10:
+        return random_name_list
     return random.sample(random_name_list, 10)
 
 
@@ -205,12 +139,17 @@ II'''
     call_back(json.dumps(ret))
 
 
-def creat_game(call_back, user_id, group_id, muglist):
+def creat_game(call_back, user_id, group_id, raw_mug_list):
+    if mug_alias == {}:
+        with open('../resource/muguess_module/mug_alias.json', 'r') as f:
+            content = json.loads(f.read())
+            for key in content.keys():
+                mug_alias[key] = content[key]
     msg = ""
     if group_id in games.keys():
         msg = "正在进行游戏中哦，请完成游戏或者输入*muguess answer查看答案结束游戏"
     else:
-        if 'user' in muglist:
+        if 'user' in raw_mug_list:
             if user_id in user_guess.keys():
                 games[group_id] = GameStatus(user_guess[user_id]['namelist'], user_guess[user_id]['limit'])
                 msg = '游戏开始，本次的词库来源为：用户自拟题目\n'
@@ -220,11 +159,21 @@ def creat_game(call_back, user_id, group_id, muglist):
             else:
                 msg = '未找到准备好的user题库'
         else:
-            if 'mai' in muglist or 'maimai' in muglist:
-                games[group_id] = GameStatus(get_random_ten_name(muglist), 50)
+            mug_list = []
+            for mug in raw_mug_list:
+                if mug in mug_alias.keys():
+                    mug_list.append(mug_alias[mug])
+                else:
+                    msg = '未找到{}的曲库'.format(mug)
+                    ret = group_message(group_id, msg.strip())
+                    call_back(json.dumps(ret))
+                    return
+            mug_list = list(set(mug_list))
+            if 'maimai' in mug_list:
+                games[group_id] = GameStatus(get_random_ten_name(mug_list), 50)
             else:
-                games[group_id] = GameStatus(get_random_ten_name(muglist))
-            msg = '游戏开始，本次的词库来源为：{}\n'.format(muglist)
+                games[group_id] = GameStatus(get_random_ten_name(mug_list))
+            msg = '游戏开始，本次的词库来源为：{}\n'.format(mug_list)
             display = games[group_id].get_display()
             for i in range(len(display)):
                 msg += '{0}、{1}\n'.format(i + 1, display[i])
@@ -329,6 +278,7 @@ def guess_name_anyway(call_back, message_id, user_id, group_id, message):
     ret = group_message(group_id, msg.strip())
     call_back(json.dumps(ret))
 
+
 def create_user_guess(call_back, user_id, message):
     print('create user guess')
     names = message.split('\n')
@@ -392,3 +342,7 @@ def mug_guess_solve(callback, user_id, group_id, message: str, message_id):
             create_user_guess(callback, user_id, args)
         elif command == 'limit':
             set_user_guess_limit(callback, user_id, args)
+
+
+if __name__ == '__main__':
+    creat_game(print, 123, 123, ['mai','maimai','asd'])
