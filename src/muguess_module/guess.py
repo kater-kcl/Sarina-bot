@@ -191,7 +191,9 @@ def game_help(call_back, group_id):
 使用“*muguess char 单个字符”指令对单个字符进行猜测\n
 字符的范围包括: “英文，符号，数字，中文，日文，罗马字母”，英文不区分大小写
 arcaea的曲库以使用非日文语言所显示的歌曲名为准\n
-使用“*muguess name 序号 名字”指令对某首曲目进行猜测，名称需完全一致，但可以不区分大小写（如输入法无法打出可以前往萌娘百科或游戏wiki等进行复制）
+使用“*muguess name 序号 名字”指令对某首曲目进行猜测\n
+或直接使用“*muguess 名字”指令对所有曲目进行猜测\n
+名称需完全一致，但可以不区分大小写（如输入法无法打出可以前往萌娘百科或游戏wiki等进行复制）\n
 私聊使用“*muguess create”可以创建用户题库，用户题库紧跟指令下一行，以换行分割
 示例：
 *muguess create
@@ -337,6 +339,7 @@ def create_user_guess(call_back, user_id, message):
         reply += name + '\n'
     user_guess[user_id] = {}
     user_guess[user_id]['namelist'] = guess_names
+    user_guess[user_id]['limit'] = 10
     ret = private_message(user_id, reply.strip())
     call_back(json.dumps(ret))
 
