@@ -11,7 +11,7 @@ def init_adv():
     adv_api.init_adv()
 
 
-def solve_adv(call_back: Callable[[str], str], message: str, user_id: str, group_id: int, res_listener):
+def solve_adv(call_back: Callable[[str], str], message: str, user_id: str, group_id: str, res_listener):
     if " " in message:
         command, args = message.split(" ", 1)
     else:
@@ -33,21 +33,21 @@ def solve_adv(call_back: Callable[[str], str], message: str, user_id: str, group
         return call_back(json.dumps(ret))
 
 
-def show_adv_list(call_back: Callable[[str], str], user_id: str, group_id: int):
+def show_adv_list(call_back: Callable[[str], str], user_id: str, group_id: str):
     adv_list = adv_api.get_level_list()
     result = "{}".format(adv_list)
     ret = group_message(group_id, result)
     call_back(json.dumps(ret))
 
 
-def show_adv_info(call_back: Callable[[str], str], user_id: str, group_id: int, args: str):
+def show_adv_info(call_back: Callable[[str], str], user_id: str, group_id: str, args: str):
     adv_info = adv_api.get_level_info(args)
     result = "{}".format(adv_info)
     ret = group_message(group_id, result)
     call_back(json.dumps(ret))
 
 
-def start_adv(call_back: Callable[[str], str], user_id: str, group_id: int, level_id: str):
+def start_adv(call_back: Callable[[str], str], user_id: str, group_id: str, level_id: str):
     print(user_id)
     print(type(user_id))
     # if level_id == 'test' and user_id != '2276363693':
@@ -64,7 +64,7 @@ def start_adv(call_back: Callable[[str], str], user_id: str, group_id: int, leve
         call_back(json.dumps(ret))
 
 
-def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: int, res_listener: Callable[[str], str]):
+def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: str, res_listener: Callable[[str], str]):
     result = adv_api.get_adv_progress(user_id)
     if result is None:
         result = "[CQ:at,qq={0}] 你没有在冒险中".format(user_id)
@@ -78,7 +78,7 @@ def get_adv_progress(call_back: Callable[[str], str], user_id: str, group_id: in
     call_back(json.dumps(ret))
 
 
-def finish_adv(call_back: Callable[[str], str], user_id: str, group_id: int, res_listener: Callable[[str], str]):
+def finish_adv(call_back: Callable[[str], str], user_id: str, group_id: str, res_listener: Callable[[str], str]):
     current_app.logger.info("in_finish_adv")
     result = adv_api.finish_adv(user_id)
     current_app.logger.info(result)

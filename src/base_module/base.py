@@ -7,7 +7,7 @@ import database.base_data_mgr
 from utils.message_builder import group_message
 
 
-def solve_base(call_back: Callable[[str], str], message: str, user_id: str, group_id: int):
+def solve_base(call_back: Callable[[str], str], message: str, user_id: str, group_id: str):
     if " " in message:
         command, args = message.split(" ", 1)
     else:
@@ -23,7 +23,7 @@ def solve_base(call_back: Callable[[str], str], message: str, user_id: str, grou
         return call_back(json.dumps(ret))
 
 
-def sign_in(call_back: Callable[[str], str], user_id: str, group_id: int):
+def sign_in(call_back: Callable[[str], str], user_id: str, group_id: str):
     last_sign: datetime.datetime = database.base_data_mgr.get_user_last_sign(user_id)
     if last_sign.date() == datetime.date.today():
         result = "[CQ:at,qq={0}] 今天已经签到过了".format(user_id)
