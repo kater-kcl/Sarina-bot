@@ -67,6 +67,7 @@ def check(call_back, user_id, group_id, args):
         steam_id = result[0][1]
         url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={steam_config.steam_api_key}&steamids={steam_id}'
         res = requests.get(url)
+        print(res.text)
         data = res.json()['response']['players'][0]
         if 'gameextrainfo' in data.keys():
             result = f"{data['personaname']}在玩：{data['gameextrainfo']}"
