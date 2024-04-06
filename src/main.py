@@ -8,8 +8,11 @@ import base_module.base as base
 import adventure_module.adventure_connect as adv
 import muguess_module.guess as guess
 import sleep_module.sleep as sleep
+import steam_module.steam as steam
+
 import json
 import logging
+
 
 from utils import message_builder
 
@@ -46,6 +49,8 @@ def bot_socket(ws):
                     guess.mug_guess_solve(ws.send, user_id, group_id, args, message_id)
                 elif command == "sleep":
                     sleep.solve_sleep(ws.send, args, user_id, group_id, ws.receive)
+                elif command == "steam":
+                    steam.solve(ws.send, args, user_id, group_id, ws.receive)
         elif data.get('message_type') == 'private' and data.get('raw_message'):
             raw_message = data['raw_message']
             user_id = str(data['user_id'])

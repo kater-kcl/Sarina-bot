@@ -16,7 +16,8 @@ class DatabaseManager:
     def connect(self):
         self.cnx = mysql.connector.connect(user=self.user, password=self.password,
                                            host=self.host, database=self.database,
-                                           port=self.port, charset='utf8')
+                                           port=self.port, charset='utf8mb4',
+                                           collation='utf8mb4_unicode_ci')  # specify collation here
         self.cursor = self.cnx.cursor()
 
     def close(self):

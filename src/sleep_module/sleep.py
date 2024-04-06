@@ -45,10 +45,13 @@ def solve_sleep(call_back: Callable[[str], str], message: str, user_id: str, gro
 
 @refresh_decorator
 def go_sleep(call_back: Callable[[str], str], user_id: str, group_id: str):
-    result = "[CQ:at,qq={0}] 加入合宿！\n晚安，祝好梦".format(user_id)
     if group_id not in sleep_list:
         sleep_list[group_id] = []
-    sleep_list[group_id].append(user_id)
+    if user_id in sleep_list[group_id]:
+        result = "[CQ:at,qq={0}] 你已经在合宿中了".format(user_id)
+    else:
+        result = "[CQ:at,qq={0}] 进入了合宿".format(user_id)
+        sleep_list[group_id].append(user_id)
     ret = group_message(group_id, result)
     return call_back(json.dumps(ret))
 
