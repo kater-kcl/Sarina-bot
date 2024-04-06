@@ -32,6 +32,9 @@ def bind(call_back, user_id, group_id, args):
         ret = group_message(group_id, result)
         return call_back(json.dumps(ret))
     steam_id = args
+    if len(steam_id) == 10:
+        steam_id = str(int(steam_id)+76561197960265728)
+
     print(steam_config.steam_api_key)
     print(steam_id)
     url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={steam_config.steam_api_key}&steamids={steam_id}'
