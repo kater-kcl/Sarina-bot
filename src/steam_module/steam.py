@@ -7,10 +7,10 @@ from config import config
 from utils.message_builder import group_message
 import config.steam_config as steam_config
 import database.steam_data_mgr as steam_database
-import database.db_mgr as database
+from utils.onebot_api import get_group_members
 
 
-def solve(call_back, message, user_id, group_id, res_listener):
+def solve(call_back, message, user_id, group_id):
     if " " in message:
         command, args = message.split(" ", 1)
     else:
@@ -20,10 +20,37 @@ def solve(call_back, message, user_id, group_id, res_listener):
         return bind(call_back, user_id, group_id, args)
     elif command == "check":
         return check(call_back, user_id, group_id, args)
+    elif command == "mhw":
+        return mhw(call_back, user_id, group_id, args)
     else:
         result = "[CQ:at,qq={0}] 未知命令".format(user_id)
         ret = group_message(group_id, result)
         return call_back(json.dumps(ret))
+
+
+# 一键看群里是谁在玩怪猎崛起
+def mhw(call_back, user_id, group_id, args):
+    result = steam_database.get_steam_user_by_qid(user_id)
+    group_list = get_group_members(group_id)
+    group_list = [str(user['user_id']) for user in group_list]
+    ret = []
+    for user in result:
+        if str(user[0]) not in group_list:
+            continue
+        steam_id = user[1]
+        url = f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={steam_config.steam_api_key}&steamids={steam_id}'
+        res = requests.get(url)
+        data = res.json()['response']['players'][0]
+        if 'gameextrainfo' in data.keys() and data['gameextrainfo'] == 'Monster Hunter: World':
+            ret.append(data['personaname'])
+    if len(ret) == 0:
+        result = "没有人在玩怪猎世界"
+    else:
+        result = "以下调查团团员正在狩猎：\n"
+        for name in ret:
+            result += f"{name}\n"
+    ret = group_message(group_id, result)
+    return call_back(json.dumps(ret))
 
 
 def bind(call_back, user_id, group_id, args):
@@ -32,8 +59,8 @@ def bind(call_back, user_id, group_id, args):
         ret = group_message(group_id, result)
         return call_back(json.dumps(ret))
     steam_id = args
-    if len(steam_id) == 10:
-        steam_id = str(int(steam_id)+76561197960265728)
+    if len(steam_id) != 17:
+        steam_id = str(int(steam_id) + 76561197960265728)
 
     print(steam_config.steam_api_key)
     print(steam_id)
@@ -78,5 +105,3 @@ def check(call_back, user_id, group_id, args):
             result = f"{data['personaname']}没有在玩游戏"
     ret = group_message(group_id, result)
     return call_back(json.dumps(ret))
-
-

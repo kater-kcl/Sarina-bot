@@ -26,3 +26,9 @@ def bind_steam_id(user_id, steam_id, nick_name):
     else:
         add_steam_user(user_id, steam_id, nick_name)
     pass
+
+
+def get_all_steam_users():
+    query = "SELECT * FROM steam_users"
+    result = DB.db_mgr.execute_query(query)
+    return result
