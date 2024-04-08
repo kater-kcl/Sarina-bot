@@ -4,17 +4,14 @@ from flask import Flask
 from flask_sockets import Sockets
 import database.db_mgr as db
 import config.config as config
-import base_module.base as base
-import adventure_module.adventure_connect as adv
-import muguess_module.guess as guess
-import sleep_module.sleep as sleep
-import steam_module.steam as steam
+import bot_module.base_module.base as base
+import bot_module.adventure_module.adventure_connect as adv
+import bot_module.muguess_module.guess as guess
+import bot_module.sleep_module.sleep as sleep
+import bot_module.steam_module.steam as steam
 
 import json
 import logging
-
-
-from utils import message_builder
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
@@ -50,7 +47,7 @@ def bot_socket(ws):
                 elif command == "sleep":
                     sleep.solve_sleep(ws.send, args, user_id, group_id, ws.receive)
                 elif command == "steam":
-                    steam.solve(ws.send, args, user_id, group_id, ws.receive)
+                    steam.solve(ws.send, args, user_id, group_id)
         elif data.get('message_type') == 'private' and data.get('raw_message'):
             raw_message = data['raw_message']
             user_id = str(data['user_id'])

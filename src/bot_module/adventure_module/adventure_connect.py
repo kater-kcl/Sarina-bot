@@ -3,8 +3,8 @@ from typing import Callable
 
 from flask import current_app
 
-import adventure_module.adventure_api as adv_api
-from utils.message_builder import group_message, make_forward_message, forward_message
+import bot_module.adventure_module.adventure_api as adv_api
+from utils.message_builder import group_message
 
 
 def init_adv():

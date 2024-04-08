@@ -3,7 +3,7 @@ import datetime
 from typing import Callable, Dict, List
 
 from utils.message_builder import group_message
-from utils.onebot_api import get_group_member_info
+from utils.onebot.onebot_api import get_group_member_info
 
 sleep_list: Dict[str, List[str]] = {}
 
