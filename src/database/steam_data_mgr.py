@@ -27,6 +27,10 @@ def bind_steam_id(user_id, steam_id, nick_name):
         add_steam_user(user_id, steam_id, nick_name)
     pass
 
+def unbind_steam_id(user_id):
+    query = "DELETE FROM steam_users WHERE user_id = %s"
+    DB.db_mgr.execute_update(query, (user_id,))
+    pass
 
 def get_all_steam_users():
     query = "SELECT * FROM steam_users"

@@ -35,11 +35,13 @@ def solve(call_back, message, user_id, group_id):
 
 def steam_help(call_back, user_id, group_id, args):
     result = "bind <steam_id64>/<steam好友码> 绑定steam账号\n" \
+             "unbind 解绑steam账号\n" \
              "check <qq_id> 查看绑定的steam账号\n" \
              "mhw 查看群里的成员是否在玩怪猎世界\n" \
              "checkall 查看群里的人在打什么游戏"
     ret = group_message(group_id, result)
     return call_back(json.dumps(ret))
+
 
 # 一键看群里是谁在玩怪猎崛起
 def mhw(call_back, user_id, group_id, args):
@@ -78,6 +80,16 @@ def bind(call_back, user_id, group_id, args):
     player_name = player.personaname
     bind_steam_id(user_id, steam_id, player_name)
     result = "[CQ:at,qq={0}] 绑定成功，你的steam名为{1}".format(user_id, player_name)
+    ret = group_message(group_id, result)
+    return call_back(json.dumps(ret))
+
+
+def unbind(call_back, user_id, group_id, args):
+    result = get_steam_user_by_qid(user_id)
+    if not result:
+        result = "[CQ:at,qq={0}] 未绑定steam账号".format(user_id)
+    else:
+        result = "[CQ:at,qq={0}] 解绑成功".format(user_id)
     ret = group_message(group_id, result)
     return call_back(json.dumps(ret))
 

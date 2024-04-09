@@ -14,7 +14,8 @@ def get_group_member_info(group_id, user_id) -> GroupMemberInfo:
     }
 
     content: GroupMemberInfo = requests.get(url, params=params).json()['data']
-    return content
+    res = GroupMemberInfo(content)
+    return res
 
 
 def get_group_members(group_id) -> List[GroupMemberInfo]:

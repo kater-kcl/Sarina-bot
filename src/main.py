@@ -9,6 +9,7 @@ import bot_module.adventure_module.adventure_connect as adv
 import bot_module.muguess_module.guess as guess
 import bot_module.sleep_module.sleep as sleep
 import bot_module.steam_module.steam as steam
+import bot_module.mhw_module.mhw as mhw
 
 import json
 import logging
@@ -19,7 +20,7 @@ sockets = Sockets(app)
 config.init_config()
 db.init_database()
 adv.init_adv()
-
+mhw.recover_from_database()
 
 @sockets.route('/')
 def bot_socket(ws):
@@ -48,6 +49,8 @@ def bot_socket(ws):
                     sleep.solve_sleep(ws.send, args, user_id, group_id, ws.receive)
                 elif command == "steam":
                     steam.solve(ws.send, args, user_id, group_id)
+                elif command == "mhw":
+                    mhw.solve(ws.send, args, user_id, group_id)
         elif data.get('message_type') == 'private' and data.get('raw_message'):
             raw_message = data['raw_message']
             user_id = str(data['user_id'])

@@ -1,6 +1,16 @@
 import database.db_mgr as DB
 
 
+class user_info:
+    def __init__(self, uid, coins, last_sign):
+        self.uid = uid
+        self.coins = coins
+        self.last_sign = last_sign
+
+    def __str__(self):
+        return f"uid: {self.uid}, coins: {self.coins}, last_sign: {self.last_sign}"
+
+
 def user_exists_decorator(func):
     def wrapper(user_id, *args, **kwargs):
         user_exists = check_user_exists(user_id)
