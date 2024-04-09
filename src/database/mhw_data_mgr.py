@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.bot_module.mhw_module.mhw_class import AssemblyInfo
+from bot_module.mhw_module.mhw_class import AssemblyInfo
 import database.db_mgr as DB
 
 
