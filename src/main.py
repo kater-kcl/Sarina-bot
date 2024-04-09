@@ -22,6 +22,20 @@ db.init_database()
 adv.init_adv()
 mhw.recover_from_database()
 
+
+def commonly_solve(call_back, message, user_id, group_id):
+    keyword_1 = ['来','有','无','在','整']
+    # 如果字符串中存在keyword，则触发
+    if any(keyword in message for keyword in keyword_1) and '集会' in message:
+        mhw.jhm(call_back, user_id, group_id, 'check')
+        return True
+    elif message == '集会码' or message == '集会':
+        mhw.jhm(call_back, user_id, group_id, 'check')
+        return True
+    return False
+
+
+
 @sockets.route('/')
 def bot_socket(ws):
     while not ws.closed:
@@ -32,6 +46,9 @@ def bot_socket(ws):
             user_id = str(data['user_id'])
             group_id = str(data['group_id'])
             message_id = data['message_id']
+            common_check = commonly_solve(ws.send, raw_message, user_id, group_id)
+            if common_check:
+                continue
             if raw_message[0] == "*":
                 print(raw_message[1:])
                 command = raw_message[1:]
@@ -51,6 +68,7 @@ def bot_socket(ws):
                     steam.solve(ws.send, args, user_id, group_id)
                 elif command == "mhw":
                     mhw.solve(ws.send, args, user_id, group_id)
+
         elif data.get('message_type') == 'private' and data.get('raw_message'):
             raw_message = data['raw_message']
             user_id = str(data['user_id'])
