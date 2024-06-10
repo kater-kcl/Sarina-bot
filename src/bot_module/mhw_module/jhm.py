@@ -7,7 +7,7 @@ from bot_module.mhw_module.mhw_class import SessionCodeInfo
 from database.mhw_data_mgr import clear_outdated_session_code_info, add_session_code_info, get_all_session_code_info, \
     del_session_code_info
 from utils.message_builder import group_message
-from utils.mhw_util.jhm import check_session_code
+from utils.mhw_util.jhm import check_session_code, session_code_2_lobby
 from utils.onebot.onebot_api import get_group_members, get_group_member_info
 
 session_code_list: List[SessionCodeInfo] = []
@@ -68,6 +68,8 @@ def check(call_back, user_id, group_id, args):
     else:
         result = "以下是正在进行的集会码：\n"
         for index, session_code in enumerate(group_session_code_info_list):
-            result += f"{index}: 集会码：{session_code.session_code} 创建人：{get_group_member_info(session_code.group_id, session_code.user_id).nickname}\n"
+            result += (f"{index}: 集会码：{session_code.session_code} "
+                       f"创建人：{get_group_member_info(session_code.group_id, session_code.user_id).nickname}\n"
+                       f"传送门：http://mhw.katerkcl.top/mhw/join?lobby={session_code_2_lobby(session_code.session_code)}")
     ret = group_message(group_id, result.rstrip())
     return call_back(json.dumps(ret))
