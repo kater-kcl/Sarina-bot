@@ -26,14 +26,14 @@ def generate_session_code(lobby):
     ans = ""
     while next:
         if count >= 12:
-            return ""
+            break
         next = MUL128H(0x8FB823EE08FB823F, temp) >> 5
         num = temp - next * 0x39
         ans = dict[num] + ans
         temp = next
         count += 1
-    if count > 11:
-        return ""
+    if count < 11:
+        ans = '#' * (11 - count) + ans
     ans = dict[sum + 1] + ans
     return ans
 
@@ -51,6 +51,8 @@ def session_code_2_lobby(ans):
     sum = ind - 1
     nxt = 0
     for i in range(1, 12):
+        if ans[i] == '#':
+            continue
         num = dict_2_val(ans[i])
         temp = nxt * 0x39 + num
         nxt = temp
@@ -65,7 +67,7 @@ def check_session_code(session_code):
     if len(session_code) != 12:
         return False
     for c in session_code:
-        if c not in dict:
+        if c not in dict and c != '#':
             return False
     lobby = session_code_2_lobby(session_code)
     if (lobby >> 32) != 0x1860000:
@@ -74,3 +76,6 @@ def check_session_code(session_code):
     if check_session != session_code:
         return False
     return True
+
+if __name__ == '__main__':
+    print(generate_session_code(109775243915699178))
