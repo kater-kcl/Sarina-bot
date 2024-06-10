@@ -23,6 +23,80 @@ def clear_expired_assembly_info(func):
 
     return wrapper
 
+dict = "234678abcdefhijkmnprstuvwxyzABCDEFGHJKLMNPQRTWXYZ!?@&+=$-"
+
+def MUL128H(a, b):
+    return ((a * b) >> 64)
+
+def generateSessionCode(lobby):
+    temp = lobby
+    sum = 0
+    while temp:
+        sum += temp & 0xFF
+        temp >>= 8
+    sum &= 0xFF
+    mulH = MUL128H(0x2492492492492493, sum)
+    sum -= ((((sum - mulH) >> 1) + mulH) >> 5) * 0x38
+
+    temp = lobby
+    bytes = 0
+    count = 0
+    for i in range(8):
+        temp ^= (sum + 1) << bytes
+        bytes += 0x08
+
+    next = 1
+    count = 0
+    ans = ""
+    while next:
+        if count >= 12:
+            return ""
+        next = MUL128H(0x8FB823EE08FB823F, temp) >> 5
+        num = temp - next * 0x39
+        ans = dict[num] + ans
+        temp = next
+        count += 1
+    if count > 11:
+        return ""
+    ans = dict[sum + 1] + ans
+    return ans
+
+def dict_2_val(c):
+    ind = 0
+    for ind in range(58):
+        if c == dict[ind]:
+            return ind
+    return -1
+
+def sessionCode2Lobby(ans):
+    ind = dict_2_val(ans[0])
+    sum = ind - 1
+    nxt = 0
+    for i in range(1, 12):
+        num = dict_2_val(ans[i])
+        temp = nxt * 0x39 + num
+        nxt = temp
+    bytes = 0
+    count = 0
+    for i in range(8):
+        nxt ^= (sum + 1) << bytes
+        bytes += 8
+    return nxt
+
+def checkSessionCode(SessionCode):
+    if len(SessionCode) != 12:
+        return False
+    for c in message:
+        if c not in dict:
+            return False
+    lobby = sessionCode2Lobby(SessionCode)
+    if ((lobby >> 32) != 0x1860000):
+        return False
+    checkSession = generateSessionCode(lobby)
+    if checkSession != SessionCode:
+        return False
+    return True
+
 
 def recover_from_database():
     global assembly_code_list
@@ -84,6 +158,11 @@ def jhm(call_back, user_id, group_id, args):
     ret = group_message(group_id, result.rstrip())
     return call_back(json.dumps(ret))
 
+def set_new_session_code(call_back, user_id, group_id, session_code):
+    if checkSessionCode(session_code):
+        result = "检测到集会码：" + session_code
+        ret = group_message(group_id, result.rstrip())
+        call_back(json.dumps(ret))
 
 def help(call_back, user_id, group_id, args):
     msg = "集会码模块（调用前需要加上*mhw）\n" \

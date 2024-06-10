@@ -24,6 +24,7 @@ mhw.recover_from_database()
 
 
 def commonly_solve(call_back, message, user_id, group_id):
+    mhw.set_new_session_code(call_back, user_id, group_id, message)
     keyword_1 = ['来','有','无','在','整']
     # 如果字符串中存在keyword，则触发
     if any(keyword in message for keyword in keyword_1) and '集会' in message:
