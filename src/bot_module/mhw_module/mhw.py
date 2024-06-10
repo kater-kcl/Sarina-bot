@@ -86,7 +86,7 @@ def sessionCode2Lobby(ans):
 def checkSessionCode(SessionCode):
     if len(SessionCode) != 12:
         return False
-    for c in message:
+    for c in SessionCode:
         if c not in dict:
             return False
     lobby = sessionCode2Lobby(SessionCode)
