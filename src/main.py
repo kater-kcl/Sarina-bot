@@ -28,10 +28,10 @@ def commonly_solve(call_back, message, user_id, group_id):
     keyword_1 = ['来','有','无','在','整']
     # 如果字符串中存在keyword，则触发
     if any(keyword in message for keyword in keyword_1) and '集会' in message:
-        mhw.jhm(call_back, user_id, group_id, 'check')
+        mhw.solve_jhm(call_back, user_id, group_id, 'check')
         return True
     elif message == '集会码' or message == '集会':
-        mhw.jhm(call_back, user_id, group_id, 'check')
+        mhw.solve_jhm(call_back, user_id, group_id, 'check')
         return True
     return False
 
