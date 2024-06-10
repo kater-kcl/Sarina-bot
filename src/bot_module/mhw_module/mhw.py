@@ -6,7 +6,7 @@ from typing import List
 from utils.message_builder import group_message
 from utils.mhw_util.jhm import check_session_code
 from utils.onebot.onebot_api import get_group_member_info, get_group_members
-import src.bot_module.mhw_module.jhm as jhm
+import bot_module.mhw_module.jhm as jhm
 
 
 def solve(call_back, message, user_id, group_id):
