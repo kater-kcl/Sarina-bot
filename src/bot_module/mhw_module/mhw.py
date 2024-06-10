@@ -159,8 +159,11 @@ def jhm(call_back, user_id, group_id, args):
     return call_back(json.dumps(ret))
 
 def set_new_session_code(call_back, user_id, group_id, session_code):
+    print(session_code)
     if checkSessionCode(session_code):
+        print("test")
         result = "检测到集会码：" + session_code
+        print(result)
         ret = group_message(group_id, result.rstrip())
         call_back(json.dumps(ret))
 
