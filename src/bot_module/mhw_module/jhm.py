@@ -34,7 +34,7 @@ def recover_from_database():
 def create(call_back, user_id, group_id, args):
     if not check_session_code(args):
         result = f"[CQ:at,qq={user_id}] 集会码无效"
-    elif any(session_code.session_code == args for session_code in session_code_list):
+    elif any(session_code.session_code == args and session_code.group_id == group_id for session_code in session_code_list):
         result = f"[CQ:at,qq={user_id}] 此集会码已被创建"
     else:
         session_code_list.append(SessionCodeInfo(user_id, group_id, args))

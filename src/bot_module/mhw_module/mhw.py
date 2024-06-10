@@ -8,8 +8,10 @@ from utils.mhw_util.jhm import check_session_code
 from utils.onebot.onebot_api import get_group_member_info, get_group_members
 import bot_module.mhw_module.jhm as jhm
 
+
 def recover_from_database():
     jhm.recover_from_database()
+
 
 def solve(call_back, message, user_id, group_id):
     if " " in message:
