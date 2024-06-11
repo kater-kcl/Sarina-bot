@@ -70,6 +70,6 @@ def check(call_back, user_id, group_id, args):
         for index, session_code in enumerate(group_session_code_info_list):
             result += (f"{index}: 集会码：{session_code.session_code} "
                        f"创建人：{get_group_member_info(session_code.group_id, session_code.user_id).nickname}\n"
-                       f"传送门：http://mhw.katerkcl.top/mhw/join?lobby={session_code_2_lobby(session_code.session_code)}")
+                       f"传送门：http://mhw.katerkcl.top/mhw/join?lobby={session_code_2_lobby(session_code.session_code)}\n")
     ret = group_message(group_id, result.rstrip())
     return call_back(json.dumps(ret))
