@@ -30,6 +30,7 @@ class PlayerSummaries(Dict):
     loccountrycode: Optional[str] = None
     locstatecode: Optional[str] = None
     loccityid: Optional[int] = None
+    lobbysteamid: Optional[str] = None
 
     # array of attribute names
     attributes = [
@@ -53,7 +54,8 @@ class PlayerSummaries(Dict):
         'cityid',
         'loccountrycode',
         'locstatecode',
-        'loccityid'
+        'loccityid',
+        'lobbysteamid'
     ]
 
     def __getattribute__(self, item):
@@ -80,5 +82,4 @@ def get_players_summaries(id64s: List[str]) -> List[PlayerSummaries]:
     res_json = res.json()
     players = res_json['response']['players']
     ret = [PlayerSummaries(item) for item in players]
-    print(ret)
     return ret

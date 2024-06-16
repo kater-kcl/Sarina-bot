@@ -39,7 +39,6 @@ def generate_session_code(lobby):
 
 
 def dict_2_val(c):
-    ind = 0
     for ind in range(58):
         if c == dict[ind]:
             return ind
